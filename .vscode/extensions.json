@@ -1,4 +1,4 @@
 {
-  "recommendations": ["hirosystems.clarity-lsp"],
+  "recommendations": ["stackslabs.clarity-stacks"],
   "unwantedRecommendations": []
 }

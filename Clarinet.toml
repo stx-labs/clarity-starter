@@ -9,5 +9,3 @@ cache_dir = './.cache'
 path = 'contracts/counter.clar'
 clarity_version = 4
 epoch = "latest" # 3.3
-
-
