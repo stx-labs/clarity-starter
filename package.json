@@ -12,13 +12,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@stacks/clarinet-sdk": "^3.9.0",
+    "@stacks/clarinet-sdk": "^3.9.1",
     "@stacks/transactions": "^7.2.0",
     "chokidar-cli": "3.0.0",
-    "vitest": "^4.0.7",
-    "vitest-environment-clarinet": "3.0.1"
+    "vitest": "^4.0.9",
+    "vitest-environment-clarinet": "3.0.2"
   },
   "devDependencies": {
-    "@types/node": "24.10.0"
+    "@types/node": "24.10.1"
   }
 }

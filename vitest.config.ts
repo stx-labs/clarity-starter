@@ -1,6 +1,4 @@
-/// <reference types="vitest" />
-
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config";
 import {
   vitestSetupFilePath,
   getClarinetVitestsArgv,
@@ -23,11 +21,12 @@ import {
 
 export default defineConfig({
   test: {
-    environment: "clarinet", // use vitest-environment-clarinet
+    // use vitest-environment-clarinet
+    environment: "clarinet",
     pool: "forks",
-    poolOptions: {
-      forks: { singleFork: true },
-    },
+    // clarinet handles test isolation by resetting the simnet between tests
+    isolate: false,
+    maxWorkers: 1,
     setupFiles: [
       vitestSetupFilePath,
       // custom setup files can be added here
