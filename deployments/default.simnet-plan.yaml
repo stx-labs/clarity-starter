@@ -47,7 +47,7 @@ plan:
             contract-name: counter
             emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
             path: contracts/counter.clar
-            clarity-version: 3
+            clarity-version: 4
         - emulated-contract-call:
             contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.counter
             emulated-sender: ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
@@ -59,4 +59,4 @@ plan:
             mstx-amount: 2222222
             cost: 1000
             anchor-block-only: true
-      epoch: "3.2"
+      epoch: "3.3"

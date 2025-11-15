@@ -12,7 +12,7 @@ on:
 jobs:
   sanity-checks:
     runs-on: ubuntu-latest
-    container: hirosystems/clarinet:latest
+    container: ghcr.io/stx-labs/clarinet:latest
     steps:
       - uses: actions/checkout@v4
       - name: Check Clarity contracts check

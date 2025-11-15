@@ -7,6 +7,5 @@ cache_dir = './.cache'
 
 [contracts.counter]
 path = 'contracts/counter.clar'
-clarity_version = 3
-epoch = 'latest'
-
+clarity_version = 4
+epoch = "latest" # 3.3

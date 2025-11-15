@@ -14,5 +14,5 @@ plan:
             cost: 10820
             path: contracts/counter.clar
             anchor-block-only: true
-            clarity-version: 3
-      epoch: "3.2"
+            clarity-version: 4
+      epoch: "3.3"

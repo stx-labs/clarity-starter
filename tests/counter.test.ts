@@ -1,4 +1,4 @@
-import { tx } from "@hirosystems/clarinet-sdk";
+import { tx } from "@stacks/clarinet-sdk";
 import { Cl, ClarityType, UIntCV } from "@stacks/transactions";
 import { describe, expect, it } from "vitest";
 
