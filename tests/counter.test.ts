@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest";
 const accounts = simnet.getAccounts();
 const address1 = accounts.get("wallet_1")!;
 
+// counter is incremented once in the simnet deployment plan
 const initialCount = 1;
 const initialHeight = 2;
 
@@ -21,7 +22,7 @@ describe("the chain reset between tests", () => {
 });
 
 describe("test get counter", () => {
-  it("ensures <get-count> send the counter value", async () => {
+  it("ensures <get-count> send the counter value", () => {
     const { result } = simnet.callReadOnlyFn(
       "counter",
       "get-count",
@@ -33,7 +34,7 @@ describe("test get counter", () => {
     expect(result).toBeUint(initialCount);
   });
 
-  it("ensures <get-count> write cosst is 0 and read is 4", async () => {
+  it("ensures <get-count> write cost is 0 and read is 4", () => {
     const { costs } = simnet.callReadOnlyFn(
       "counter",
       "get-count",
@@ -96,10 +97,10 @@ describe("test <decrement>", () => {
     expect(block[1].result).toBeOk(Cl.bool(true));
 
     const counter = simnet.getDataVar("counter", "count");
-    expect(counter).toBeUint(originalValue as number);
+    expect(counter).toBeUint(Number(originalValue));
   });
 
-  it("ensures <decrement> throws an error if result is lower than 0", async () => {
+  it("ensures <decrement> throws an error if result is lower than 0", () => {
     for (let i = 0; i < initialCount; i++) {
       simnet.callPublicFn("counter", "decrement", [], address1);
     }
@@ -115,7 +116,7 @@ describe("test <decrement>", () => {
 });
 
 describe("test <add>", () => {
-  it("ensures <add> adds up the right amout", () => {
+  it("ensures <add> adds up the right amount", () => {
     const { result } = simnet.callPublicFn(
       "counter",
       "add",
@@ -128,7 +129,7 @@ describe("test <add>", () => {
     expect(counter).toBeUint(initialCount + 3);
   });
 
-  it("ensures <add> transfers right amout of ustx", () => {
+  it("ensures <add> transfers right amount of ustx", () => {
     const { events } = simnet.callPublicFn(
       "counter",
       "add",
