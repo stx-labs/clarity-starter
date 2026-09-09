@@ -35,7 +35,7 @@
 ;; ADMIN METHODS
 
 (define-private (is-admin)
-  (is-eq tx-sender (var-get contract-owner))
+  (is-eq contract-caller (var-get contract-owner))
 )
 
 (define-public (set-cost (new-cost uint))

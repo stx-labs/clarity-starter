@@ -256,3 +256,21 @@ describe("test <set-admin>", () => {
     expect(result).toBeErr(Cl.uint(1003));
   });
 });
+
+describe("test admin as a contract principal", () => {
+  it("ensures a contract can be admin", () => {
+    // a proxy contract that calls the counter admin function
+    simnet.deployContract(
+      "proxy",
+      `(define-public (set-cost (new-cost uint))
+         (contract-call? '${simnet.deployer}.counter set-cost new-cost))`,
+      { clarityVersion: 5 },
+      simnet.deployer,
+    );
+    const proxy = `${simnet.deployer}.proxy`;
+    simnet.callPublicFn("counter", "set-admin", [Cl.principal(proxy)], simnet.deployer);
+
+    const { result } = simnet.callPublicFn("proxy", "set-cost", [Cl.uint(30)], address1);
+    expect(result).toBeOk(Cl.bool(true));
+  });
+});
