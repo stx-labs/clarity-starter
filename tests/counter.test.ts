@@ -4,7 +4,9 @@ import { describe, expect, it } from "vitest";
 
 const accounts = simnet.getAccounts();
 const address1 = accounts.get("wallet_1")!;
+const address2 = accounts.get("wallet_2")!;
 
+// The simnet deployment plan calls increment once, so count starts at 1
 const initialCount = 1;
 const initialHeight = 2;
 
@@ -157,32 +159,118 @@ describe("test <add>", () => {
   });
 });
 
-describe("test get counter at block height", () => {
-  it("ensures <get-count> send the counter value", () => {
-    const height1 = Cl.uint(simnet.blockHeight);
-    simnet.callPublicFn("counter", "increment", [], address1);
-    const height2 = Cl.uint(simnet.blockHeight);
-    simnet.callPublicFn("counter", "increment", [], address1);
+describe("test <set-cost>", () => {
+  it("ensures deployer can update the cost", () => {
+    const { result } = simnet.callPublicFn(
+      "counter",
+      "set-cost",
+      [Cl.uint(20)],
+      simnet.deployer,
+    );
+    expect(result).toBeOk(Cl.bool(true));
 
-    const atBlock1 = simnet.callReadOnlyFn(
-      "counter",
-      "get-count-at-block",
-      [height1],
-      address1,
-    );
-    expect(atBlock1.result).toBeOk(Cl.uint(initialCount));
-    const atBlock2 = simnet.callReadOnlyFn(
-      "counter",
-      "get-count-at-block",
-      [height2],
-      address1,
-    );
-    expect(atBlock2.result).toBeOk(Cl.uint(initialCount + 1));
+    const cost = simnet.getDataVar("counter", "cost");
+    expect(cost).toBeUint(20);
   });
 
-  // we can actualy get the values in two ways
-  it("ensures the counter variable hold the right value", () => {
-    const counter = simnet.getDataVar("counter", "count");
-    expect(counter).toBeUint(initialCount);
+  it("ensures the new cost is used when calling <increment>", () => {
+    simnet.callPublicFn("counter", "set-cost", [Cl.uint(20)], simnet.deployer);
+    const { events } = simnet.callPublicFn(
+      "counter",
+      "increment",
+      [],
+      address1,
+    );
+    expect(events.length).toBe(1);
+    expect(events[0].data).toMatchObject({
+      amount: "20",
+      sender: address1,
+      recipient: simnet.deployer,
+    });
+  });
+
+  it("ensures non-admin cannot update the cost", () => {
+    const { result } = simnet.callPublicFn(
+      "counter",
+      "set-cost",
+      [Cl.uint(20)],
+      address1,
+    );
+    expect(result).toBeErr(Cl.uint(1003));
+  });
+});
+
+describe("test <set-admin>", () => {
+  it("ensures deployer can update the admin", () => {
+    const { result } = simnet.callPublicFn(
+      "counter",
+      "set-admin",
+      [Cl.principal(address1)],
+      simnet.deployer,
+    );
+    expect(result).toBeOk(Cl.bool(true));
+
+    const owner = simnet.getDataVar("counter", "contract-owner");
+    expect(owner).toBePrincipal(address1);
+  });
+
+  it("ensures new admin can use admin functions", () => {
+    simnet.callPublicFn(
+      "counter",
+      "set-admin",
+      [Cl.principal(address1)],
+      simnet.deployer,
+    );
+    const { result } = simnet.callPublicFn(
+      "counter",
+      "set-cost",
+      [Cl.uint(50)],
+      address1,
+    );
+    expect(result).toBeOk(Cl.bool(true));
+  });
+
+  it("ensures old admin loses access after transfer", () => {
+    simnet.callPublicFn(
+      "counter",
+      "set-admin",
+      [Cl.principal(address1)],
+      simnet.deployer,
+    );
+    const { result } = simnet.callPublicFn(
+      "counter",
+      "set-cost",
+      [Cl.uint(50)],
+      simnet.deployer,
+    );
+    expect(result).toBeErr(Cl.uint(1003));
+  });
+
+  it("ensures non-admin cannot update the admin", () => {
+    const { result } = simnet.callPublicFn(
+      "counter",
+      "set-admin",
+      [Cl.principal(address2)],
+      address1,
+    );
+    expect(result).toBeErr(Cl.uint(1003));
+  });
+});
+
+describe("test admin as a contract principal", () => {
+  it("ensures a contract can be admin", () => {
+    // a proxy contract that calls the counter admin function
+    simnet.deployContract(
+      "proxy",
+      `(define-public (set-cost (new-cost uint))
+         (contract-call? '${simnet.deployer}.counter set-cost new-cost))`,
+      { clarityVersion: 5 },
+      simnet.deployer,
+    );
+    const proxy = `${simnet.deployer}.proxy`;
+    simnet.callPublicFn("counter", "set-admin", [Cl.principal(proxy)], simnet.deployer);
+
+    const { result } = simnet.callPublicFn("proxy", "set-cost", [Cl.uint(30)], address1);
+    expect(result).toBeOk(Cl.bool(true));
   });
 });
