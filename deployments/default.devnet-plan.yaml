@@ -37,7 +37,7 @@ plan:
     - transaction-type: contract-publish
       contract-name: counter
       expected-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-      cost: 12790
+      cost: 12750
       path: contracts/counter.clar
       anchor-block-only: true
       clarity-version: 5

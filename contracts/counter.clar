@@ -1,5 +1,5 @@
 (define-constant ERR_COUNT_MUST_BE_POSITIVE (err u1001))
-(define-constant ERROR_ADD_MORE_THAN_ONE (err u1002))
+(define-constant ERR_ADD_MORE_THAN_ONE (err u1002))
 (define-constant ERR_NOT_ADMIN (err u1003))
 
 (define-data-var count uint u0)
@@ -22,7 +22,7 @@
 
 (define-public (add (n uint))
   (begin
-    (asserts! (> n u1) ERROR_ADD_MORE_THAN_ONE)
+    (asserts! (> n u1) ERR_ADD_MORE_THAN_ONE)
     (try! (stx-transfer? (* n (var-get cost)) tx-sender (var-get contract-owner)))
     (ok (var-set count (+ (var-get count) n)))
   )
