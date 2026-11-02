@@ -1,0 +1,13 @@
+blockExoticSubdeps: true
+trustPolicy: no-downgrade
+
+minimumReleaseAge: 1440 # 1 day
+
+minimumReleaseAgeExclude:
+  - '@stacks/clarinet-sdk-wasm'
+  - '@stacks/clarinet-sdk'
+
+# Hoist the wasm package so TS can resolve it from the symlinked
+# clarinet-sdk path under pnpm
+publicHoistPattern:
+  - '@stacks/clarinet-sdk-wasm'
