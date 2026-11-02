@@ -1,6 +1,6 @@
 import { tx } from "@stacks/clarinet-sdk";
 import { Cl, ClarityType, UIntCV } from "@stacks/transactions";
-import { describe, expect, it } from "vitest";
+import { assert, describe, expect, it } from "vitest";
 
 const accounts = simnet.getAccounts();
 const address1 = accounts.get("wallet_1")!;
@@ -89,13 +89,16 @@ describe("test <decrement>", () => {
     const originalCounter = simnet.getDataVar("counter", "count");
     const originalValue = (originalCounter as UIntCV).value;
 
-    const block = simnet.mineBlock([
+    const [incrementTx, decrementTx] = simnet.mineBlock([
       tx.callPublicFn("counter", "increment", [], address1),
       tx.callPublicFn("counter", "decrement", [], address1),
     ]);
 
-    expect(block[0].result).toBeOk(Cl.bool(true));
-    expect(block[1].result).toBeOk(Cl.bool(true));
+    assert(incrementTx.status === "success", "increment tx failed");
+    expect(incrementTx.execution.result).toBeOk(Cl.bool(true));
+
+    assert(decrementTx.status === "success", "decrement tx failed");
+    expect(decrementTx.execution.result).toBeOk(Cl.bool(true));
 
     const counter = simnet.getDataVar("counter", "count");
     expect(counter).toBeUint(originalValue as number);
@@ -268,9 +271,19 @@ describe("test admin as a contract principal", () => {
       simnet.deployer,
     );
     const proxy = `${simnet.deployer}.proxy`;
-    simnet.callPublicFn("counter", "set-admin", [Cl.principal(proxy)], simnet.deployer);
+    simnet.callPublicFn(
+      "counter",
+      "set-admin",
+      [Cl.principal(proxy)],
+      simnet.deployer,
+    );
 
-    const { result } = simnet.callPublicFn("proxy", "set-cost", [Cl.uint(30)], address1);
+    const { result } = simnet.callPublicFn(
+      "proxy",
+      "set-cost",
+      [Cl.uint(30)],
+      address1,
+    );
     expect(result).toBeOk(Cl.bool(true));
   });
 });

@@ -47,7 +47,7 @@ plan:
       contract-name: counter
       emulated-sender: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
       path: contracts/counter.clar
-      clarity-version: 5
+      clarity-version: 6
     - transaction-type: emulated-contract-call
       contract-id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.counter
       emulated-sender: ST1SJ3DTE5DN7X54YDH5D64R3BCB6A2AG2ZQ8YPD5
