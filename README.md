@@ -13,11 +13,10 @@ If you don't already have the [Clarity extension](https://marketplace.visualstud
 
 ## Run tests
 
-In the root of this directory, install the npm depencies and run the tests
+In the root of this directory, install the dependencies and run the tests
 ```sh
 pnpm install --frozen-lockfile
 pnpm test
-
 ```
 
 ---
